@@ -1,5 +1,5 @@
 # Project-X
-git pull
+git push
 
 
 Sybren <achternaam> \n
