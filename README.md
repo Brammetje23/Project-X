@@ -2,8 +2,8 @@
 git push
 
 
-Sybren <achternaam> \n
-Matthijs <achternaam> \n
-Joep Luten \n
-Bram van Alphen \n
+Sybren <achternaam> 
+Matthijs <achternaam> 
+Joep Luten 
+Bram van Alphen 
                 
