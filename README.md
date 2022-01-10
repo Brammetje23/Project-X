@@ -2,8 +2,11 @@
 git push
 
 
-Sybren <achternaam> 
+Sybren Geel 
 Matthijs <achternaam> 
 Joep Luten 
-Bram van Alphen 
+Bram van Alphen
+
+
+Project 6: Housing Prices
                 
