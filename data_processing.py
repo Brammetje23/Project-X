@@ -35,6 +35,10 @@ def clean_data(data, throwaway):
     # Copy the dataframe
     dataframe  = data.copy()
 
+    # Remove the ID's since this is not an actual feature of the house.
+    dataframe.drop(['Id'], axis=1, inplace=True)
+
+
     # Get the categories with missing values
     missing_categories = check_missing(dataframe)
     
