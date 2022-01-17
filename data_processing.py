@@ -1,4 +1,5 @@
 # Imports
+from cProfile import label
 import pandas as pd
 from pandas.api.types import is_string_dtype
 from pandas.api.types import is_numeric_dtype
@@ -151,23 +152,34 @@ def import_and_clean_train(file_name, encoder=one_hot_encoding):
     df = pd.read_csv(location)
     
     # Clean the dataframe
-    df_clean = clean_data(df)
+    df_clean = clean_data(df, (100/3))
 
     # Encode the ordinal data, check if label encoding, because adds an extra parameter.
     if encoder == label_encoding:
+
+        # Encode the ordinal data
         df_encoded, label_dictionary = encoder(df_clean)
 
-        # Create an x and an y
-        df_x, df_y = split_x_y(df_encoded)
-
-        # Return the x/y train/test
-        return get_test_train(df_x, df_y), label_dictionary
-    
-    # Encode the ordinal data.
-    df_encoded = encoder(df_clean)
+    elif encoder == one_hot_encoding:
+        # Encode the ordinal data.
+        df_encoded = encoder(df_clean)
 
     # Create an x and an y
     df_x, df_y = split_x_y(df_encoded)
 
-    # Return the x/y train/test
-    return get_test_train(df_x, df_y)
+    # Create test/train split
+    train_x, test_x, train_y, test_y = get_test_train(df_x, df_y)
+
+    # Reset the indexes
+    train_x = train_x.reset_index(drop=True)
+    test_y = test_y.reset_index(drop=True)
+    train_y = train_y.reset_index(drop=True)
+    test_y = test_y.reset_index(drop=True)
+
+    if encoder == label_encoding:
+
+        return train_x, test_x, train_y, test_y, label_dictionary
+
+    elif encoder == one_hot_encoding:
+       
+       return train_x, test_x, train_y, test_y
