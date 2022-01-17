@@ -25,7 +25,7 @@ def check_missing(dataframe):
 
 
 
-def clean_data(data, throwaway):
+def clean_data(data, throwaway = (100/3), correlation_thres = 0.05):
     '''
     Function to clean the data, decisions are based on how many NaN's a category has.
 
@@ -66,6 +66,17 @@ def clean_data(data, throwaway):
 
     # Check is all NaN  values have been filled
     assert len(check_missing(dataframe)) == 0, 'Still contains NaN'
+
+
+    # Checking feature correlation to price
+    price_corr = dataframe.corr()['SalePrice']
+    # Convert values to absolute
+    price_corr = price_corr.apply(abs)
+
+    for feature in dict(price_corr):
+        if price_corr[feature] <= correlation_thres:
+            dataframe.drop([feature], axis=1, inplace = True)
+
 
     # Return the cleaned dataframe
     return dataframe
@@ -138,7 +149,7 @@ def split_x_y(data):
 
 
 def get_test_train(data_x, data_y):
-
+    # Return
     return train_test_split(data_x, data_y, test_size = 0.3, random_state=40)
 
 def import_and_clean_train(file_name, encoder=one_hot_encoding):
@@ -172,7 +183,7 @@ def import_and_clean_train(file_name, encoder=one_hot_encoding):
     df_x, df_y = split_x_y(df_encoded)
 
     # Create test/train split
-    train_x, test_x, train_y, test_y = get_test_train(df_x, df_y)
+    train_x, test_x, train_y, test_y = train_test_split(df_x, df_y, test_size = 0.3, random_state=40)
 
     # Reset the indexes
     train_x = train_x.reset_index(drop=True)
