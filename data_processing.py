@@ -99,14 +99,19 @@ def label_encoding(data):
         # If the data of the feature is categorical, apply label encoding for said column
         if is_string_dtype(dataframe[feature]):
 
+            # Create a label encoder.
             le = preprocessing.LabelEncoder()
+            # Fit the data to the encoder
             le.fit(dataframe[feature])
+            # Transform the data in the df
             dataframe[feature] = le.transform(dataframe[feature])
+            # Save the encoder so that data can be transformed back later on
+            label_encoders[feature] = le
 
             # NOTE: Maybe make dictionary for saving the LabelEncoder classes, to convert the classes back to the original strings later.
 
     # Return the edited dataframe
-    return dataframe
+    return dataframe, label_encoders
 
 
 
@@ -148,7 +153,17 @@ def import_and_clean_train(file_name, encoder=one_hot_encoding):
     # Clean the dataframe
     df_clean = clean_data(df)
 
-    # Encode the ordinal data
+    # Encode the ordinal data, check if label encoding, because adds an extra parameter.
+    if encoder == label_encoding:
+        df_encoded, label_dictionary = encoder(df_clean)
+
+        # Create an x and an y
+        df_x, df_y = split_x_y(df_encoded)
+
+        # Return the x/y train/test
+        return get_test_train(df_x, df_y), label_dictionary
+    
+    # Encode the ordinal data.
     df_encoded = encoder(df_clean)
 
     # Create an x and an y
