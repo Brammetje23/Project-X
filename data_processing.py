@@ -1,5 +1,6 @@
 # Imports
 from cProfile import label
+from tkinter.tix import InputOnly
 import pandas as pd
 from pandas.api.types import is_string_dtype
 from pandas.api.types import is_numeric_dtype
@@ -25,7 +26,7 @@ def check_missing(dataframe):
 
 
 
-def clean_data(data, throwaway = (100/3), correlation_thres = 0.05):
+def clean_data(data, throwaway = (100/3), correlation_thres = 0):
     '''
     Function to clean the data, decisions are based on how many NaN's a category has.
 
@@ -39,9 +40,31 @@ def clean_data(data, throwaway = (100/3), correlation_thres = 0.05):
     dataframe.drop(['Id'], axis=1, inplace=True)
 
 
+
+
+    # Some categories with NaN means this feature is missing, fill in with 'None'
+
+    none_features_cat = {'PoolQC', 'MiscFeature', 'Alley', 'Fence', 'FireplaceQu', 'GarageType', 'GarageFinish',
+                    'GarageQual', 'GarageCond', 'BsmtQual', 'BsmtCond', 'BsmtExposure', 'BsmtFinType1', 'BsmtFinType2',
+                    'MasVnrType'}
+
+    for feature in none_features_cat:
+            dataframe[feature].fillna(value='None', inplace=True)
+
+    none_features_num = {'GarageYrBlt', 'GarageArea', 'GarageCars', 'BsmtFinSF1', 'BsmtFinSF2', 'BsmtUnfSF','TotalBsmtSF',
+                         'BsmtHalfBath', 'BsmtFullBath', 'MasVnrArea'}
+
+    for feature in none_features_num:
+            dataframe[feature].fillna(0, inplace=True)
+
+    
+    dataframe["LotFrontage"] = dataframe.groupby("Neighborhood")["LotFrontage"].transform(
+        lambda x: x.fillna(x.median()))
+
     # Get the categories with missing values
     missing_categories = check_missing(dataframe)
-    
+    print(missing_categories)
+
     # Drop the features with a lot of Nan data
     for feature in missing_categories:
 
@@ -76,7 +99,6 @@ def clean_data(data, throwaway = (100/3), correlation_thres = 0.05):
     for feature in dict(price_corr):
         if price_corr[feature] <= correlation_thres:
             dataframe.drop([feature], axis=1, inplace = True)
-
 
     # Return the cleaned dataframe
     return dataframe
@@ -123,8 +145,6 @@ def label_encoding(data):
             dataframe[feature] = le.transform(dataframe[feature])
             # Save the encoder so that data can be transformed back later on
             label_encoders[feature] = le
-
-            # NOTE: Maybe make dictionary for saving the LabelEncoder classes, to convert the classes back to the original strings later.
 
     # Return the edited dataframe
     return dataframe, label_encoders
