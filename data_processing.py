@@ -63,7 +63,6 @@ def clean_data(data, throwaway = (100/3), correlation_thres = 0):
 
     # Get the categories with missing values
     missing_categories = check_missing(dataframe)
-    print(missing_categories)
 
     # Drop the features with a lot of Nan data
     for feature in missing_categories:
