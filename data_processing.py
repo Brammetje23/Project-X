@@ -102,14 +102,14 @@ def clean_data(data, throwaway = (100/3), correlation_thres = 0):
 
 
     # Removing outliers
-    dataframe = dataframe[dataframe['GrLivArea'] <= 4500]
-    dataframe = dataframe[dataframe['GarageArea'] <= 1300]
-    dataframe = dataframe[dataframe['TotalBsmtSF'] <= 4000]
-    dataframe = dataframe[dataframe['1stFlrSF'] <= 4000]
-    dataframe = dataframe[dataframe['MasVnrArea'] <= 1500]
-    dataframe = dataframe[dataframe['BsmtFinSF1'] <= 3000]
-    dataframe = dataframe[dataframe['LotFrontage'] <= 200]
-    dataframe = dataframe[dataframe['LotArea'] <= 100000]
+    #dataframe = dataframe[dataframe['GrLivArea'] <= 4500]
+    #dataframe = dataframe[dataframe['GarageArea'] <= 1300]
+    #dataframe = dataframe[dataframe['TotalBsmtSF'] <= 4000]
+    #dataframe = dataframe[dataframe['1stFlrSF'] <= 4000]
+    #dataframe = dataframe[dataframe['MasVnrArea'] <= 1500]
+    #dataframe = dataframe[dataframe['BsmtFinSF1'] <= 3000]
+    #dataframe = dataframe[dataframe['LotFrontage'] <= 200]
+    #dataframe = dataframe[dataframe['LotArea'] <= 100000]
 
 
     # Return the cleaned dataframe
