@@ -93,11 +93,17 @@ def clean_data(data, throwaway = (100/3), correlation_thres = 0):
     # Checking feature correlation to price
     price_corr = dataframe.corr()['SalePrice']
     # Convert values to absolute
-    price_corr = price_corr.apply(abs)
+    price_corr = price_corr.apply(abs).sort_values(ascending=False)
 
+    # Removing features if the correlation is lower than the threshold(default: 0)
     for feature in dict(price_corr):
         if price_corr[feature] <= correlation_thres:
             dataframe.drop([feature], axis=1, inplace = True)
+
+
+    # Trying to spot outliers
+    print(price_corr)
+
 
     # Return the cleaned dataframe
     return dataframe
@@ -217,3 +223,33 @@ def import_and_clean_train(file_name, encoder=one_hot_encoding):
     elif encoder == one_hot_encoding:
        
        return train_x, test_x, train_y, test_y
+
+
+def cleaned_dataframe(file_name, encoder=one_hot_encoding):
+    '''
+    Imports, cleans and encodes the data. Returns full dataframe.
+    
+    Inputs: file_name(str) and encoder(function, either 'one_hot_encoding' or 'label_encoding')
+    Outputs: dataframe
+    '''
+
+    # Create string
+    location = 'Data/' + file_name + '.csv'
+
+    # Read in the file
+    df = pd.read_csv(location)
+    
+    # Clean the dataframe
+    df_clean = clean_data(df, (100/3))
+
+    # Encode the ordinal data, check if label encoding, because adds an extra parameter.
+    if encoder == label_encoding:
+
+        # Encode the ordinal data
+        df_encoded, label_dictionary = encoder(df_clean)
+        return df_encoded, label_dictionary
+
+    elif encoder == one_hot_encoding:
+        # Encode the ordinal data.
+        df_encoded = encoder(df_clean)
+        return df_encoded
